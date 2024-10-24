@@ -21,3 +21,16 @@ WITH second_cte AS(
 SELECT COALESCE(
     (SELECT s.salary FROM second_cte AS s where s.SecondHighestSalary=2),NULL
 ) AS "SecondHighestSalary"
+
+--# 184. Department Highest Salary
+
+
+WITH SALARY_CTE AS(
+    SELECT
+    d.name as Department,
+    e.name as Employee,
+    e.salary as Salary,
+    RANK() OVER (PARTITION BY e.departmentId ORDER BY e.salary desc) AS RANK
+    FROM Employee AS e LEFT JOIN Department AS d on e.departmentId=d.id
+)
+SELECT c.Department,c.Employee,c.Salary FROM SALARY_CTE as c WHERE c.RANK=1
